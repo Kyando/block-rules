@@ -384,7 +384,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07136e4656e58041f86646dbb0e3bc95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _gridWidth: 2
+  _gridHeight: 3
   cellPrefab: {fileID: 3308191150856174103, guid: a151d92af3e5afe5c9ac9174eca72c9f, type: 3}
+  camera: {fileID: 519420031}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
