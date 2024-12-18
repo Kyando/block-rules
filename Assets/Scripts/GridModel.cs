@@ -1,40 +1,32 @@
-public class GridModel
+using UnityEngine;
+
+public class GridModel : MonoBehaviour
 {
-    private int width;
-    private int height;
-    private bool[,] gridData; // Tracks occupied cells.
+    [SerializeField] private int _gridWidth = 2;
+    [SerializeField] private int _gridHeight = 3;
+    private Color[,] _grid;
+    public GameObject cellPrefab;
 
-    public GridModel(int width, int height)
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
     {
-        this.width = width;
-        this.height = height;
-        gridData = new bool[width, height];
-    }
-
-    public bool CanPlacePiece(PieceModel piece, int x, int y)
-    {
-        foreach (var block in piece.BlockCoordinates)
+        Vector3 positionOffset = new Vector3(-(_gridWidth * 0.5f), -(_gridHeight * 0.5f), 0);
+        _grid = new Color[_gridWidth, _gridHeight];
+        Color[] row_colors = {Color.red, Color.green, Color.blue,};
+        for (int y = 0; y < _gridHeight; y++)
         {
-            int gridX = x + block.x;
-            int gridY = y + block.y;
-
-            if (gridX < 0 || gridX >= width || gridY < 0 || gridY >= height || gridData[gridX, gridY])
-                return false;
-        }
-        return true;
-    }
-
-    public void PlacePiece(PieceModel piece, int x, int y)
-    {
-        foreach (var block in piece.BlockCoordinates)
-        {
-            gridData[x + block.x, y + block.y] = true;
+            for (int x = 0; x < _gridWidth; x++)
+            {
+                _grid[x, y] = row_colors[y];
+                Vector3 position = new Vector3(x + positionOffset.x, y + positionOffset.y, 0);
+                GameObject go = Instantiate(cellPrefab, position, Quaternion.identity, this.transform);
+                go.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = _grid[x, y];
+            }
         }
     }
 
-    public bool IsLevelComplete()
+    // Update is called once per frame
+    void Update()
     {
-        // Add logic for checking if the level is complete.
-        return false;
     }
 }
