@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class CellGridModel
 {
+    public Vector2Int gridPosition = Vector2Int.zero;
+    public bool isEnabled = false;
     public bool isEmpty = false;
-    public Vector2 gridPosition = Vector2.zero;
-    public Color color = Color.black;
+    public BlockModel blockModel;
 
-    public CellGridModel(Vector2 gridPosition, Color color)
+    public CellGridModel(Vector2Int gridPosition, bool isEnabled, bool isEmpty)
     {
         this.gridPosition = gridPosition;
-        this.color = color;
+        this.isEnabled = isEnabled;
+        this.isEmpty = isEmpty;
     }
 }
