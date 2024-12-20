@@ -3,7 +3,7 @@ using UnityEngine;
 public class CellGridView : MonoBehaviour
 {
     public CellGridModel cellModel;
-    private SpriteRenderer spriteRenderer;
+    public SpriteRenderer spriteRenderer;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Init(CellGridModel cellModel)

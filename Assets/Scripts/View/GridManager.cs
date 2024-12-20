@@ -11,6 +11,11 @@ public class GridManager : MonoBehaviour
     public CellGridView cellGridViewPrefab;
     public GameObject blockPrefab;
 
+    [SerializeField] private PieceModel selectedPiece;
+    [SerializeField] private List<CellGridView> highlightedCells = new List<CellGridView>();
+    [SerializeField] private Vector3 mouseWorldPos;
+    [SerializeField] private Vector2Int mousePos;
+
     void Start()
     {
         gridModel = new GridModel(7, 14);
@@ -27,48 +32,71 @@ public class GridManager : MonoBehaviour
                 _gridView[x, y].Init(cellModel);
             }
         }
+
+        selectedPiece = new PieceModel();
+        selectedPiece.blocks = PieceModel.GetBlockT(selectedPiece);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        mouseWorldPos = camera.ScreenToWorldPoint(Input.mousePosition);
+        mousePos = new Vector2Int(Mathf.RoundToInt(mouseWorldPos.x), Mathf.RoundToInt(mouseWorldPos.y));
+
+        while (highlightedCells.Count > 0)
         {
-            PlaceBlock(0);
+            highlightedCells[0].spriteRenderer.color = Color.gray;
+            highlightedCells.RemoveAt(0);
         }
 
-        if (Input.GetKeyDown(KeyCode.W))
+        if (IsPositionInGrid(mousePos))
         {
-            PlaceBlock(1);
-        }
+            bool isValidPiecePosition = true;
+            foreach (var block in selectedPiece.blocks)
+            {
+                Vector2Int blockPos = block.piecePosition + mousePos;
+                if (!IsPositionInGrid(blockPos))
+                {
+                    isValidPiecePosition = false;
+                    break;
+                }
+            }
 
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            PlaceBlock(2);
-        }
+            foreach (var block in selectedPiece.blocks)
+            {
+                Vector2Int blockPos = block.piecePosition + mousePos;
+                if (IsPositionInGrid(blockPos))
+                {
+                    _gridView[blockPos.x, blockPos.y].spriteRenderer.color =
+                        isValidPiecePosition ? Color.cyan : Color.red;
+                    highlightedCells.Add(_gridView[blockPos.x, blockPos.y]);
+                }
+            }
 
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            PlaceBlock(3);
-        }
 
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            PlaceBlock(4);
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                PlaceBlock(0);
+            }
         }
+    }
 
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            PlaceBlock(5);
-        }
+    private bool IsPositionInGrid(Vector2Int pos)
+    {
+        if (pos.x >= transform.position.x && pos.x < transform.position.x + gridModel.width &&
+            pos.y >= transform.position.y && pos.y < transform.position.y + gridModel.height)
+            return true;
+        return false;
+    }
+
+    private void UpdatePiecePreview()
+    {
     }
 
     private void PlaceBlock(int selectedColumn)
     {
-        PieceModel pieceModel = new PieceModel();
-        pieceModel.blocks = PieceModel.GetBlockT(pieceModel);
         // CellGridModel dropCell = GetGridDropCell(column);
-        var dropCell = GetPieceDropCell(selectedColumn, pieceModel);
+        var dropCell = GetPieceDropCell(selectedColumn, selectedPiece);
 
         // blockModel.cellGridModel = dropCell;
         // if (dropCell is not null)
