@@ -15,6 +15,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] private List<CellGridView> highlightedCells = new List<CellGridView>();
     [SerializeField] private Vector3 mouseWorldPos;
     [SerializeField] private Vector2Int mousePos;
+    [SerializeField] private Transform selectedPiecePreview;
 
     void Start()
     {
@@ -33,12 +34,79 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        selectedPiece = new PieceModel();
-        selectedPiece.blocks = PieceModel.GetBlockT(selectedPiece);
+        selectedPiece = new PieceModel(PieceModel.PieceType.I);
+
+        var previewGameObject = new GameObject("SelectedPiecePreview");
+        selectedPiecePreview = previewGameObject.transform;
+        for (int i = 0; i < 4; i++)
+        {
+            Instantiate(blockPrefab, selectedPiecePreview);
+        }
+
+        UpdateSelectedPiecePreview();
+    }
+
+    private void UpdateSelectedPiecePreview()
+    {
+        for (int i = 0; i < selectedPiecePreview.childCount; i++)
+        {
+            selectedPiecePreview.GetChild(i).gameObject.SetActive(false);
+        }
+
+        if (selectedPiece is not null)
+        {
+            for (int i = 0; i < selectedPiece.blocks.Length; i++)
+            {
+                Vector3 blockPos = new Vector3(
+                    selectedPiece.blocks[i].piecePosition.x + mousePos.x,
+                    selectedPiece.blocks[i].piecePosition.y + mousePos.y,
+                    -1
+                );
+                selectedPiecePreview.GetChild(i).gameObject.SetActive(true);
+                selectedPiecePreview.GetChild(i).position = blockPos;
+            }
+        }
     }
 
     // Update is called once per frame
     void Update()
+    {
+        HandleKeyInputs();
+
+        HandleMouseInput();
+
+        UpdateSelectedPiecePreview();
+    }
+
+    private void HandleKeyInputs()
+    {
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            selectedPiece = new PieceModel(PieceModel.PieceType.S);
+        }
+
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            selectedPiece = new PieceModel(PieceModel.PieceType.O);
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            selectedPiece = new PieceModel(PieceModel.PieceType.L);
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            selectedPiece = new PieceModel(PieceModel.PieceType.T);
+        }
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            selectedPiece = new PieceModel(PieceModel.PieceType.I);
+        }
+    }
+
+    private void HandleMouseInput()
     {
         mouseWorldPos = camera.ScreenToWorldPoint(Input.mousePosition);
         mousePos = new Vector2Int(Mathf.RoundToInt(mouseWorldPos.x), Mathf.RoundToInt(mouseWorldPos.y));
@@ -55,7 +123,7 @@ public class GridManager : MonoBehaviour
             foreach (var block in selectedPiece.blocks)
             {
                 Vector2Int blockPos = block.piecePosition + mousePos;
-                if (!IsPositionInGrid(blockPos))
+                if (!IsPositionInGrid(blockPos) || !gridModel.grid[blockPos.x, blockPos.y].isEmpty)
                 {
                     isValidPiecePosition = false;
                     break;
@@ -74,10 +142,28 @@ public class GridManager : MonoBehaviour
             }
 
 
-            if (Input.GetKeyDown(KeyCode.Q))
+            if (Input.GetMouseButtonDown(0) && isValidPiecePosition)
             {
-                PlaceBlock(0);
+                PlacePieceAtMousePosition(mousePos, selectedPiece);
+                // PlaceDroppingBlock(0);
             }
+        }
+    }
+
+    private void PlacePieceAtMousePosition(Vector2Int basePosition, PieceModel piece)
+    {
+        Debug.Log("Placing Piece At Mouse Position " + basePosition.x + ", " + basePosition.y);
+        foreach (var blockModel in piece.blocks)
+        {
+            Vector2Int cellPos = blockModel.piecePosition + basePosition;
+            Vector3 blockPos = new Vector3(cellPos.x, cellPos.y, 0);
+            GameObject block = Instantiate(blockPrefab, blockPos, Quaternion.identity);
+
+            CellGridModel targetCell = gridModel.grid[cellPos.x, cellPos.y];
+            blockModel.cellGridModel = targetCell;
+            block.name = "Block " + targetCell.gridPosition.x + "," + targetCell.gridPosition.y;
+            targetCell.isEmpty = false;
+            targetCell.blockModel = blockModel;
         }
     }
 
@@ -93,7 +179,7 @@ public class GridManager : MonoBehaviour
     {
     }
 
-    private void PlaceBlock(int selectedColumn)
+    private void PlaceDroppingBlock(int selectedColumn)
     {
         // CellGridModel dropCell = GetGridDropCell(column);
         var dropCell = GetPieceDropCell(selectedColumn, selectedPiece);
@@ -114,13 +200,10 @@ public class GridManager : MonoBehaviour
         Dictionary<int, Vector2Int> pieceCollisionCheckDic = new Dictionary<int, Vector2Int>();
         for (int i = 0; i < pieceModel.blocks.Length; i++)
         {
-            Debug.Log(pieceModel.blocks[i].piecePosition);
             Vector2Int blockPos = pieceModel.blocks[i].piecePosition;
-            Debug.Log(pieceCollisionCheckDic.ContainsKey(blockPos.x));
 
             if (pieceCollisionCheckDic.ContainsKey(blockPos.x) && pieceCollisionCheckDic[blockPos.x].y >= blockPos.y)
             {
-                Debug.Log("Update blockDict position to " + blockPos.x + "," + blockPos.y);
                 pieceCollisionCheckDic.Add(blockPos.x, blockPos);
                 continue;
             }
@@ -129,7 +212,6 @@ public class GridManager : MonoBehaviour
         }
 
         CellGridModel outputDropCell = null;
-        Vector2Int collidedBlock = Vector2Int.zero;
         foreach (int blockColumn in pieceCollisionCheckDic.Keys)
         {
             int checkColumn = column + blockColumn;
@@ -139,7 +221,6 @@ public class GridManager : MonoBehaviour
             if (outputDropCell is null || dropCell.gridPosition.y > outputDropCell.gridPosition.y)
             {
                 outputDropCell = dropCell;
-                collidedBlock = pieceCollisionCheckDic[blockColumn];
             }
         }
 
@@ -166,11 +247,8 @@ public class GridManager : MonoBehaviour
         for (int y = gridModel.height - 1; y >= 0; y--)
         {
             CellGridModel cell = gridModel.grid[column, y];
-            Debug.Log("isEnabled " + cell.isEnabled);
-            Debug.Log("isEmpty " + cell.isEmpty);
             if (!cell.isEnabled || !cell.isEmpty)
             {
-                Debug.Log("Selected cell is " + y);
                 return currentSelectedCell;
             }
 
