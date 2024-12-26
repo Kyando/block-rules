@@ -24,6 +24,26 @@ public class PieceModel
         this.blocks = GetBlocksByPieceType(this);
     }
 
+    public void FlipPieceHorizontally()
+    {
+        foreach (BlockModel block in blocks)
+        {
+            block.piecePosition.x *= -1;
+        }
+    }
+
+    public void RotatePiece(bool clockwise = true)
+    {
+        foreach (BlockModel block in blocks)
+        {
+            int newX = clockwise ? block.piecePosition.y : -block.piecePosition.y;
+            int newY = clockwise ? -block.piecePosition.x : block.piecePosition.x;
+
+            block.piecePosition.x = newX;
+            block.piecePosition.y = newY;
+        }
+    }
+
     public static BlockModel[] GetBlocksByPieceType(PieceModel pieceModel)
     {
         switch (pieceModel.pieceType)

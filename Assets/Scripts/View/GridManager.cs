@@ -58,8 +58,8 @@ public class GridManager : MonoBehaviour
             for (int i = 0; i < selectedPiece.blocks.Length; i++)
             {
                 Vector3 blockPos = new Vector3(
-                    selectedPiece.blocks[i].piecePosition.x + mousePos.x,
-                    selectedPiece.blocks[i].piecePosition.y + mousePos.y,
+                    selectedPiece.blocks[i].piecePosition.x + mouseWorldPos.x,
+                    selectedPiece.blocks[i].piecePosition.y + mouseWorldPos.y,
                     -1
                 );
                 selectedPiecePreview.GetChild(i).gameObject.SetActive(true);
@@ -103,6 +103,21 @@ public class GridManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.I))
         {
             selectedPiece = new PieceModel(PieceModel.PieceType.I);
+        }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            selectedPiece?.FlipPieceHorizontally();
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            selectedPiece?.RotatePiece(clockwise: true);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            selectedPiece?.RotatePiece(clockwise: false);
         }
     }
 
