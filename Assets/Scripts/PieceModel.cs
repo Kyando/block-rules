@@ -15,12 +15,14 @@ public class PieceModel
     // public Vector3 position;
     public BlockModel[] blocks;
     private PieceType pieceType = PieceType.I;
+    public Color pieceColor = Color.white  ;
     public int pieceId = 0;
 
 
-    public PieceModel(PieceType pieceType)
+    public PieceModel(PieceType pieceType, Color pieceColor)
     {
         this.pieceType = pieceType;
+        this.pieceColor = pieceColor;
         this.blocks = GetBlocksByPieceType(this);
     }
 

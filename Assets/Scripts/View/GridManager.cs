@@ -34,13 +34,19 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        selectedPiece = new PieceModel(PieceModel.PieceType.I);
+        selectedPiece = new PieceModel(PieceModel.PieceType.I, Color.green);
 
         var previewGameObject = new GameObject("SelectedPiecePreview");
         selectedPiecePreview = previewGameObject.transform;
         for (int i = 0; i < 4; i++)
         {
             Instantiate(blockPrefab, selectedPiecePreview);
+        }
+
+        for (int i = 0; i < selectedPiecePreview.childCount; i++)
+        {
+            selectedPiecePreview.GetChild(i).GetChild(0).GetComponent<SpriteRenderer>().color =
+                selectedPiece.pieceColor;
         }
 
         UpdateSelectedPiecePreview();
@@ -80,29 +86,35 @@ public class GridManager : MonoBehaviour
 
     private void HandleKeyInputs()
     {
+        bool shouldUpdateSelectedPiecePreview = false;
         if (Input.GetKeyDown(KeyCode.S))
         {
-            selectedPiece = new PieceModel(PieceModel.PieceType.S);
+            selectedPiece = new PieceModel(PieceModel.PieceType.S, Color.blue);
+            shouldUpdateSelectedPiecePreview = true;
         }
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            selectedPiece = new PieceModel(PieceModel.PieceType.O);
+            selectedPiece = new PieceModel(PieceModel.PieceType.O, Color.red);
+            shouldUpdateSelectedPiecePreview = true;
         }
 
         if (Input.GetKeyDown(KeyCode.L))
         {
-            selectedPiece = new PieceModel(PieceModel.PieceType.L);
+            selectedPiece = new PieceModel(PieceModel.PieceType.L, Color.cyan);
+            shouldUpdateSelectedPiecePreview = true;
         }
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            selectedPiece = new PieceModel(PieceModel.PieceType.T);
+            selectedPiece = new PieceModel(PieceModel.PieceType.T, Color.yellow);
+            shouldUpdateSelectedPiecePreview = true;
         }
 
         if (Input.GetKeyDown(KeyCode.I))
         {
-            selectedPiece = new PieceModel(PieceModel.PieceType.I);
+            selectedPiece = new PieceModel(PieceModel.PieceType.I, Color.green);
+            shouldUpdateSelectedPiecePreview = true;
         }
 
         if (Input.GetKeyDown(KeyCode.F))
@@ -118,6 +130,16 @@ public class GridManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.D))
         {
             selectedPiece?.RotatePiece(clockwise: false);
+        }
+
+
+        if (shouldUpdateSelectedPiecePreview)
+        {
+            for (int i = 0; i < selectedPiecePreview.childCount; i++)
+            {
+                selectedPiecePreview.GetChild(i).GetChild(0).GetComponent<SpriteRenderer>().color =
+                    selectedPiece.pieceColor;
+            }
         }
     }
 
@@ -173,6 +195,7 @@ public class GridManager : MonoBehaviour
             Vector2Int cellPos = blockModel.piecePosition + basePosition;
             Vector3 blockPos = new Vector3(cellPos.x, cellPos.y, 0);
             GameObject block = Instantiate(blockPrefab, blockPos, Quaternion.identity);
+            block.transform.GetChild(0).GetComponent<SpriteRenderer>().color = piece.pieceColor;
 
             CellGridModel targetCell = gridModel.grid[cellPos.x, cellPos.y];
             blockModel.cellGridModel = targetCell;
