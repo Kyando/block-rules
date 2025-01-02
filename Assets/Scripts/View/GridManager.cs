@@ -11,15 +11,28 @@ public class GridManager : MonoBehaviour
     public CellGridView cellGridViewPrefab;
     public GameObject blockPrefab;
 
+    public static GridManager instance { get; private set; }
     [SerializeField] private PieceModel selectedPiece;
     [SerializeField] private List<CellGridView> highlightedCells = new List<CellGridView>();
     [SerializeField] private Vector3 mouseWorldPos;
     [SerializeField] private Vector2Int mousePos;
     [SerializeField] private Transform selectedPiecePreview;
 
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
-        gridModel = new GridModel(7, 14);
+        gridModel = new GridModel(4, 4);
         camera.transform.position = new Vector3((gridModel.width * 0.5f) - .5f, (gridModel.height * 0.5f) - .5f,
             camera.transform.position.z);
 
@@ -34,7 +47,7 @@ public class GridManager : MonoBehaviour
             }
         }
 
-        selectedPiece = new PieceModel(PieceModel.PieceType.I, Color.green);
+        // selectedPiece = new PieceModel(PieceModel.PieceType.I, Color.green);
 
         var previewGameObject = new GameObject("SelectedPiecePreview");
         selectedPiecePreview = previewGameObject.transform;
@@ -43,13 +56,7 @@ public class GridManager : MonoBehaviour
             Instantiate(blockPrefab, selectedPiecePreview);
         }
 
-        for (int i = 0; i < selectedPiecePreview.childCount; i++)
-        {
-            selectedPiecePreview.GetChild(i).GetChild(0).GetComponent<SpriteRenderer>().color =
-                selectedPiece.pieceColor;
-        }
-
-        UpdateSelectedPiecePreview();
+        UpdateSelecetedPiecePreview();
     }
 
     private void UpdateSelectedPiecePreview()
@@ -77,69 +84,20 @@ public class GridManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        HandleKeyInputs();
 
         HandleMouseInput();
 
         UpdateSelectedPiecePreview();
     }
 
-    private void HandleKeyInputs()
+    private void UpdateSelecetedPiecePreview()
     {
-        bool shouldUpdateSelectedPiecePreview = false;
-        if (Input.GetKeyDown(KeyCode.S))
+        for (int i = 0; i < selectedPiecePreview.childCount; i++)
         {
-            selectedPiece = new PieceModel(PieceModel.PieceType.S, Color.blue);
-            shouldUpdateSelectedPiecePreview = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            selectedPiece = new PieceModel(PieceModel.PieceType.O, Color.red);
-            shouldUpdateSelectedPiecePreview = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            selectedPiece = new PieceModel(PieceModel.PieceType.L, Color.cyan);
-            shouldUpdateSelectedPiecePreview = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            selectedPiece = new PieceModel(PieceModel.PieceType.T, Color.yellow);
-            shouldUpdateSelectedPiecePreview = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.I))
-        {
-            selectedPiece = new PieceModel(PieceModel.PieceType.I, Color.green);
-            shouldUpdateSelectedPiecePreview = true;
-        }
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            selectedPiece?.FlipPieceHorizontally();
-        }
-
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            selectedPiece?.RotatePiece(clockwise: true);
-        }
-
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            selectedPiece?.RotatePiece(clockwise: false);
-        }
-
-
-        if (shouldUpdateSelectedPiecePreview)
-        {
-            for (int i = 0; i < selectedPiecePreview.childCount; i++)
-            {
-                selectedPiecePreview.GetChild(i).GetChild(0).GetComponent<SpriteRenderer>().color =
-                    selectedPiece.pieceColor;
-            }
+            if (selectedPiece is null)
+                continue;
+            selectedPiecePreview.GetChild(i).GetChild(0).GetComponent<SpriteRenderer>().color =
+                selectedPiece.pieceColor;
         }
     }
 
@@ -154,7 +112,7 @@ public class GridManager : MonoBehaviour
             highlightedCells.RemoveAt(0);
         }
 
-        if (IsPositionInGrid(mousePos))
+        if (IsPositionInGrid(mousePos) && selectedPiece is not null)
         {
             bool isValidPiecePosition = true;
             foreach (var block in selectedPiece.blocks)
@@ -297,5 +255,11 @@ public class GridManager : MonoBehaviour
         }
 
         return currentSelectedCell;
+    }
+
+    public void OnPieceSelected(PieceModel piece)
+    {
+        selectedPiece = piece;
+        UpdateSelecetedPiecePreview();
     }
 }
