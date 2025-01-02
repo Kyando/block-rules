@@ -36,7 +36,10 @@ public class MouseInputManager : MonoBehaviour
             if (selectedPiece is not null)
             {
                 Vector3 rotationEuler = selectedPiece.transform.rotation.eulerAngles;
-                selectedPiece.transform.rotation = Quaternion.Euler(0, 0, rotationEuler.z - 90);
+                float zRotation = rotationEuler.z - 90;
+                if (zRotation == 0 || zRotation == -360)
+                    zRotation = 360;
+                selectedPiece.transform.rotation = Quaternion.Euler(0, 0, zRotation);
                 selectedPiece?.pieceModel.RotatePiece(clockwise: true);
             }
         }
@@ -46,14 +49,13 @@ public class MouseInputManager : MonoBehaviour
     {
         if (selectedPiece == piece)
         {
-            Debug.Log("Deselected Piece");
+            GridManager.instance.PlacePieceOnGrid();
             this.selectedPiece = null;
             GridManager.instance.OnPieceSelected(null);
             return;
         }
 
-        Debug.Log("OnPieceSelected");
         this.selectedPiece = piece;
-        GridManager.instance.OnPieceSelected(piece.pieceModel);
+        GridManager.instance.OnPieceSelected(piece);
     }
 }

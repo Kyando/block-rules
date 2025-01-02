@@ -441,7 +441,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 640416025}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -6.5, y: -1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -753,10 +753,10 @@ MonoBehaviour:
     height: 3
   cellGridViewPrefab: {fileID: 877617326545336553, guid: a151d92af3e5afe5c9ac9174eca72c9f, type: 3}
   blockPrefab: {fileID: 3308191150856174103, guid: c0c6dc70a7cbd74fab4cc4ee9b679fab, type: 3}
+  selectedPiece: {fileID: 0}
   highlightedCells: []
   mouseWorldPos: {x: 0, y: 0, z: 0}
   mousePos: {x: 0, y: 0}
-  selectedPiecePreview: {fileID: 0}
 --- !u!1 &1408440834
 GameObject:
   m_ObjectHideFlags: 0
