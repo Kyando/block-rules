@@ -14,6 +14,7 @@ public class GridManager : MonoBehaviour
     public CellGridView cellGridViewPrefab;
     public GameObject blockPrefab;
     public List<Vector2Int> disabledCellsList = new List<Vector2Int>();
+    public GameObject victoryPanel;
 
     [SerializeField] private CellGridView[,] _gridView;
     [SerializeField] private PieceView selectedPiece;
@@ -34,6 +35,7 @@ public class GridManager : MonoBehaviour
 
     void Start()
     {
+        victoryPanel?.SetActive(false);
         gridModel = new GridModel(gridSize.x, gridSize.y);
         mainCamera.transform.position = new Vector3((gridModel.width * 0.5f) - .5f, (gridModel.height * 0.5f) - .5f,
             mainCamera.transform.position.z);
@@ -148,6 +150,13 @@ public class GridManager : MonoBehaviour
         Vector3 pieceOffset = firstCellPos - firstBlock.transform.position;
         pieceView.isOnGrid = true;
         pieceView.transform.position += pieceOffset;
+
+        bool isVictory = CheckVictoryCondition();
+        if (isVictory)
+        {
+            Debug.Log("Victory");
+            victoryPanel?.SetActive(true);
+        }
     }
 
     private bool IsPositionInGrid(Vector2Int pos)
@@ -158,20 +167,22 @@ public class GridManager : MonoBehaviour
         return false;
     }
 
-    private void PlaceDroppingBlock(int selectedColumn)
+    private bool CheckVictoryCondition()
     {
-        // CellGridModel dropCell = GetGridDropCell(column);
-        var dropCell = GetPieceDropCell(selectedColumn, selectedPiece.pieceModel);
+        bool isVictoryCondition = true;
+        for (int y = 0; y < gridModel.height; y++)
+        {
+            for (int x = 0; x < gridModel.width; x++)
+            {
+                if (gridModel.grid[x, y].isEnabled && gridModel.grid[x, y].isEmpty)
+                {
+                    isVictoryCondition = false;
+                    break;
+                }
+            }
+        }
 
-        // blockModel.cellGridModel = dropCell;
-        // if (dropCell is not null)
-        // {
-        //     Vector3 blockPos = new Vector3(dropCell.gridPosition.x, dropCell.gridPosition.y, 0);
-        //     GameObject block = Instantiate(blockPrefab, blockPos, Quaternion.identity);
-        //     block.name = "Block " + dropCell.gridPosition.x + "," + dropCell.gridPosition.y;
-        //     dropCell.isEmpty = false;
-        //     dropCell.blockModel = blockModel;
-        // }
+        return isVictoryCondition;
     }
 
     CellGridModel GetPieceDropCell(int column, PieceModel pieceModel)
