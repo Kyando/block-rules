@@ -50,12 +50,14 @@ public class MouseInputManager : MonoBehaviour
         if (selectedPiece == piece)
         {
             GridManager.instance.PlacePieceOnGrid();
+            this.selectedPiece.isPieceSelected = false;
             this.selectedPiece = null;
             GridManager.instance.OnPieceSelected(null);
             return;
         }
 
         this.selectedPiece = piece;
+        this.selectedPiece.isPieceSelected = true;
         GridManager.instance.OnPieceSelected(piece);
     }
 }

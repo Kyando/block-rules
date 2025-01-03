@@ -2,20 +2,22 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GridManager : MonoBehaviour
 {
-    public Camera camera;
+    public static GridManager instance { get; private set; }
+
+    public Camera mainCamera;
+    public Vector2Int gridSize;
     public GridModel gridModel;
-    public CellGridView[,] _gridView;
     public CellGridView cellGridViewPrefab;
     public GameObject blockPrefab;
+    public List<Vector2Int> disabledCellsList = new List<Vector2Int>();
 
-    public static GridManager instance { get; private set; }
+    [SerializeField] private CellGridView[,] _gridView;
     [SerializeField] private PieceView selectedPiece;
-    [SerializeField] private List<CellGridView> highlightedCells = new List<CellGridView>();
-    [SerializeField] private Vector3 mouseWorldPos;
-    [SerializeField] private Vector2Int mousePos;
+    private List<CellGridView> highlightedCells = new List<CellGridView>();
 
 
     void Awake()
@@ -32,16 +34,29 @@ public class GridManager : MonoBehaviour
 
     void Start()
     {
-        gridModel = new GridModel(4, 4);
-        camera.transform.position = new Vector3((gridModel.width * 0.5f) - .5f, (gridModel.height * 0.5f) - .5f,
-            camera.transform.position.z);
+        gridModel = new GridModel(gridSize.x, gridSize.y);
+        mainCamera.transform.position = new Vector3((gridModel.width * 0.5f) - .5f, (gridModel.height * 0.5f) - .5f,
+            mainCamera.transform.position.z);
 
         _gridView = new CellGridView[gridModel.width, gridModel.height];
         for (int y = 0; y < gridModel.height; y++)
         {
             for (int x = 0; x < gridModel.width; x++)
             {
-                CellGridModel cellModel = new CellGridModel(new Vector2Int(x, y), true, true);
+                Vector2Int gridPosition = new Vector2Int(x, y);
+                bool isCellEnabled = true;
+                foreach (Vector2Int cellPos in disabledCellsList)
+                {
+                    if (cellPos == gridPosition)
+                    {
+                        Debug.Log("Cell disabled - " + cellPos);
+                        isCellEnabled = false;
+                        break;
+                    }
+                }
+
+                CellGridModel cellModel = gridModel.grid[x, y];
+                cellModel.isEnabled = isCellEnabled;
                 _gridView[x, y] = Instantiate(cellGridViewPrefab, this.transform);
                 _gridView[x, y].Init(cellModel);
             }
@@ -57,8 +72,6 @@ public class GridManager : MonoBehaviour
 
     private void HandleMouseInput()
     {
-        mouseWorldPos = camera.ScreenToWorldPoint(Input.mousePosition);
-        mousePos = new Vector2Int(Mathf.RoundToInt(mouseWorldPos.x), Mathf.RoundToInt(mouseWorldPos.y));
         while (highlightedCells.Count > 0)
         {
             highlightedCells[0].spriteRenderer.color = Color.gray;
@@ -81,7 +94,8 @@ public class GridManager : MonoBehaviour
         foreach (var block in selectedPiece.pieceModel.blocks)
         {
             Vector2Int blockPos = block.piecePosition + piecePos;
-            if (!IsPositionInGrid(blockPos) || !gridModel.grid[blockPos.x, blockPos.y].isEmpty)
+            if (!IsPositionInGrid(blockPos) || !gridModel.grid[blockPos.x, blockPos.y].isEmpty ||
+                !gridModel.grid[blockPos.x, blockPos.y].isEnabled)
             {
                 isValidPiecePosition = false;
                 break;
@@ -117,20 +131,23 @@ public class GridManager : MonoBehaviour
 
     private void PlacePieceAtMousePosition(Vector2Int basePosition, PieceView pieceView)
     {
-        Debug.Log("Placing Piece At Mouse Position " + basePosition.x + ", " + basePosition.y);
-        foreach (var blockModel in pieceView.pieceModel.blocks)
+        foreach (var blockView in pieceView.blocks)
         {
-            Vector2Int cellPos = blockModel.piecePosition + basePosition;
-            Vector3 blockPos = new Vector3(cellPos.x, cellPos.y, 0);
-            GameObject block = Instantiate(blockPrefab, blockPos, Quaternion.identity);
-            block.transform.GetChild(0).GetComponent<SpriteRenderer>().color = pieceView.pieceColor;
-
+            Vector2Int cellPos = blockView.blockModel.piecePosition + basePosition;
             CellGridModel targetCell = gridModel.grid[cellPos.x, cellPos.y];
-            blockModel.cellGridModel = targetCell;
-            block.name = "Block " + targetCell.gridPosition.x + "," + targetCell.gridPosition.y;
+            blockView.blockModel.cellGridModel = targetCell;
             targetCell.isEmpty = false;
-            targetCell.blockModel = blockModel;
+            targetCell.blockModel = blockView.blockModel;
         }
+
+        BlockView firstBlock = pieceView.blocks[0];
+        var firstCellPos = new Vector3(firstBlock.blockModel.piecePosition.x + basePosition.x,
+            firstBlock.blockModel.piecePosition.y + basePosition.y,
+            pieceView.transform.position.z);
+
+        Vector3 pieceOffset = firstCellPos - firstBlock.transform.position;
+        pieceView.isOnGrid = true;
+        pieceView.transform.position += pieceOffset;
     }
 
     private bool IsPositionInGrid(Vector2Int pos)
@@ -223,8 +240,24 @@ public class GridManager : MonoBehaviour
         return currentSelectedCell;
     }
 
+    private void RemovePieceFromGrid()
+    {
+        foreach (var blockView in selectedPiece.blocks)
+        {
+            blockView.blockModel.cellGridModel.isEmpty = true;
+            blockView.blockModel.cellGridModel.blockModel = null;
+            blockView.blockModel.cellGridModel = null;
+        }
+
+        selectedPiece.isOnGrid = false;
+    }
+
     public void OnPieceSelected(PieceView piece)
     {
         selectedPiece = piece;
+        if (selectedPiece is not null && selectedPiece.isOnGrid)
+        {
+            RemovePieceFromGrid();
+        }
     }
 }
