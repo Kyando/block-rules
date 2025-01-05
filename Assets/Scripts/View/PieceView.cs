@@ -11,15 +11,35 @@ public class PieceView : MonoBehaviour
     public Vector2 posOffset;
     public BlockView blockPrefab;
     public List<BlockView> blocks;
-    public bool isOnGrid = false;
-    
+    public bool isOnGrid { get; private set; }
+
+    [SerializeField] private bool isMouseOver = false;
     public bool isPieceSelected = false;
     private SpriteRenderer spriteRenderer;
+    private SpriteRenderer bottomSpriteRenderer;
 
 
     void Awake()
     {
         this.pieceModel = new PieceModel(this.pieceType, this.pieceColor);
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        GameObject bottomSpriteObj = new GameObject("BottomSprite")
+        {
+            transform =
+            {
+                position = this.transform.position + new Vector3(0, -.25f, 0),
+                rotation = this.transform.rotation,
+                localScale = this.transform.localScale,
+                parent = this.transform
+            }
+        };
+
+        this.bottomSpriteRenderer = bottomSpriteObj.AddComponent<SpriteRenderer>();
+        bottomSpriteRenderer.sprite = this.spriteRenderer.sprite;
+        bottomSpriteRenderer.color =
+            new Color(this.pieceColor.r * .8f, this.pieceColor.g * .8f, this.pieceColor.b * .8f, 1);
+        bottomSpriteRenderer.sortingOrder = this.spriteRenderer.sortingOrder - 1;
 
         for (int i = 0; i < pieceModel.blocks.Length; i++)
         {
@@ -29,6 +49,7 @@ public class PieceView : MonoBehaviour
                 this.transform.position.y + blockModel.piecePosition.y + posOffset.y, 0);
             BlockView blockView = Instantiate(blockPrefab, blockPos, Quaternion.identity, this.transform);
             blockView.blockModel = blockModel;
+            blockView.GameObject().SetActive(false);
             blocks.Add(blockView);
         }
 
@@ -38,8 +59,7 @@ public class PieceView : MonoBehaviour
 
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        this.spriteRenderer.color = new Color(.6f, .6f, .6f, 1f);
+        UpdateSpriteColors();
     }
 
     public Vector2Int GetPiecePosition()
@@ -68,30 +88,54 @@ public class PieceView : MonoBehaviour
         Vector2Int piecePos = new Vector2Int(
             Mathf.RoundToInt(transform.position.x + offset.x),
             Mathf.RoundToInt(transform.position.y + offset.y));
-        
+
         return piecePos;
+    }
+
+    public void Rotate()
+    {
+        Vector3 rotationEuler = this.transform.rotation.eulerAngles;
+        float zRotation = rotationEuler.z - 90;
+        if (zRotation == 0 || zRotation == -360)
+            zRotation = 360;
+        this.transform.rotation = Quaternion.Euler(0, 0, zRotation);
+        this.pieceModel.RotatePiece(clockwise: true);
+        this.bottomSpriteRenderer.transform.position = this.transform.position + new Vector3(0, -.25f, 0);
+    }
+
+    public void SetIsPieceOnGrid(bool isOnGrid)
+    {
+        this.isOnGrid = isOnGrid;
+        UpdateSpriteColors();
+    }
+
+    private void UpdateSpriteColors()
+    {
+        if (isPieceSelected || isOnGrid || isMouseOver)
+        {
+            this.spriteRenderer.color = new Color(pieceColor.r, pieceColor.g, pieceColor.b, 1f);
+            this.bottomSpriteRenderer.color = new Color(pieceColor.r * .8f, pieceColor.g * .8f, pieceColor.b * .8f, 1f);
+            return;
+        }
+
+        this.spriteRenderer.color = new Color(pieceColor.r * .6f, pieceColor.g * .6f, pieceColor.b * .6f, 1f);
+        this.bottomSpriteRenderer.color = new Color(pieceColor.r * .6f * .8f, pieceColor.g * .6f * .8f,
+            pieceColor.b * .6f * .8f, 1f);
     }
 
 
     private void OnMouseEnter()
     {
-        if (isPieceSelected)
-        {
-            this.spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-            return;
-        }
-        this.spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+        this.isMouseOver = true;
+        UpdateSpriteColors();
     }
 
     private void OnMouseExit()
     {
-        if (isPieceSelected)
-        {
-            this.spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
-            return;
-        }
-        this.spriteRenderer.color = new Color(.6f, .6f, .6f, 1f);
+        this.isMouseOver = false;
+        UpdateSpriteColors();
     }
+
 
     private void OnMouseDown()
     {

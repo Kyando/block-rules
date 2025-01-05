@@ -89,8 +89,8 @@ public class GridManager : MonoBehaviour
 
     private bool IsPieceOnValidGridPosition(Vector2Int piecePos)
     {
-        if (!IsPositionInGrid(piecePos))
-            return false;
+        // if (!IsPositionInGrid(piecePos))
+        // return false;
 
         bool isValidPiecePosition = true;
         foreach (var block in selectedPiece.pieceModel.blocks)
@@ -148,7 +148,7 @@ public class GridManager : MonoBehaviour
             pieceView.transform.position.z);
 
         Vector3 pieceOffset = firstCellPos - firstBlock.transform.position;
-        pieceView.isOnGrid = true;
+        pieceView.SetIsPieceOnGrid(true);
         pieceView.transform.position += pieceOffset;
 
         bool isVictory = CheckVictoryCondition();
@@ -260,7 +260,7 @@ public class GridManager : MonoBehaviour
             blockView.blockModel.cellGridModel = null;
         }
 
-        selectedPiece.isOnGrid = false;
+        selectedPiece.SetIsPieceOnGrid(false);
     }
 
     public void OnPieceSelected(PieceView piece)

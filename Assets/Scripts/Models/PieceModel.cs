@@ -55,10 +55,10 @@ public class PieceModel
             case PieceType.I:
                 return new[]
                 {
-                    new BlockModel(new Vector2Int(0, -1), pieceModel),
+                    new BlockModel(new Vector2Int(-1, 0), pieceModel),
                     new BlockModel(new Vector2Int(0, 0), pieceModel),
-                    new BlockModel(new Vector2Int(0, 1), pieceModel),
-                    new BlockModel(new Vector2Int(0, 2), pieceModel),
+                    new BlockModel(new Vector2Int(1, 0), pieceModel),
+                    new BlockModel(new Vector2Int(2, 0), pieceModel),
                 };
             case PieceType.T:
                 return new[]
@@ -71,10 +71,10 @@ public class PieceModel
             case PieceType.L:
                 return new[]
                 {
-                    new BlockModel(new Vector2Int(-1, 1), pieceModel),
-                    new BlockModel(new Vector2Int(0, 1), pieceModel),
+                    new BlockModel(new Vector2Int(-1, 0), pieceModel),
                     new BlockModel(new Vector2Int(0, 0), pieceModel),
-                    new BlockModel(new Vector2Int(0, -1), pieceModel),
+                    new BlockModel(new Vector2Int(1, 0), pieceModel),
+                    new BlockModel(new Vector2Int(1, 1), pieceModel),
                 };
             case PieceType.J:
                 return new[]
