@@ -1,3 +1,4 @@
+using Enums;
 using UnityEngine;
 
 public class BlockModel
@@ -5,6 +6,7 @@ public class BlockModel
     public Vector2Int piecePosition;
     public PieceModel pieceModel;
     public CellGridModel cellGridModel;
+    public MeepleType meepleType = MeepleType.NONE;
 
 
     public BlockModel(Vector2Int piecePosition, PieceModel pieceModel)

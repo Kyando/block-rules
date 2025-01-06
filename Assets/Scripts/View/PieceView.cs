@@ -13,6 +13,8 @@ public class PieceView : MonoBehaviour
     public List<BlockView> blocks;
     public bool isOnGrid { get; private set; }
 
+    public List<KingMeepleView> meepleList = new List<KingMeepleView>();
+
     [SerializeField] private bool isMouseOver = false;
     public bool isPieceSelected = false;
     private SpriteRenderer spriteRenderer;
@@ -22,6 +24,16 @@ public class PieceView : MonoBehaviour
     void Awake()
     {
         this.pieceModel = new PieceModel(this.pieceType, this.pieceColor);
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            KingMeepleView kingMeeple = transform.GetChild(i).GetComponent<KingMeepleView>();
+            if (kingMeeple)
+            {
+                meepleList.Add(kingMeeple);
+            }
+        }
+
+
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         GameObject bottomSpriteObj = new GameObject("BottomSprite")
@@ -53,6 +65,36 @@ public class PieceView : MonoBehaviour
             blocks.Add(blockView);
         }
 
+        for (int i = 0; i < meepleList.Count; i++)
+        {
+            KingMeepleView meeple = meepleList[i];
+            BlockView blockView = null;
+            for (int j = 0; j < blocks.Count; j++)
+            {
+                blocks[j].blockModel.meepleType = meeple.meepleType;
+                if (blockView is null)
+                {
+                    blockView = blocks[j];
+                    continue;
+                }
+
+                BlockView newBlockView = blocks[j];
+                float currentDist = Vector3.Distance(meeple.transform.position, blockView.transform.position);
+                float newDist = Vector3.Distance(meeple.transform.position, newBlockView.transform.position);
+
+                if (newDist < currentDist)
+                {
+                    blockView = newBlockView;
+                }
+            }
+
+            if (blockView is not null)
+            {
+                meeple.blockView = blockView;
+            }
+
+            meeple.transform.rotation = Quaternion.identity;
+        }
 
         // BoxCollider2D collider2D = this.AddComponent<BoxCollider2D>();
     }
@@ -88,6 +130,12 @@ public class PieceView : MonoBehaviour
         Vector2Int piecePos = new Vector2Int(
             Mathf.RoundToInt(transform.position.x + offset.x),
             Mathf.RoundToInt(transform.position.y + offset.y));
+
+        foreach (var meeple in meepleList)
+        {
+            meeple.transform.rotation = Quaternion.identity;
+        }
+
 
         return piecePos;
     }

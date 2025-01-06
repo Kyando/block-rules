@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Enums;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -51,7 +52,6 @@ public class GridManager : MonoBehaviour
                 {
                     if (cellPos == gridPosition)
                     {
-                        Debug.Log("Cell disabled - " + cellPos);
                         isCellEnabled = false;
                         break;
                     }
@@ -151,12 +151,87 @@ public class GridManager : MonoBehaviour
         pieceView.SetIsPieceOnGrid(true);
         pieceView.transform.position += pieceOffset;
 
-        bool isVictory = CheckVictoryCondition();
-        if (isVictory)
+
+        OnGridUpdated();
+    }
+
+    private void OnGridUpdated()
+    {
+        UpdateMeepleStates();
+        
+        bool isBoardFull = IsBoardFull();
+        if (isBoardFull)
         {
             Debug.Log("Victory");
             victoryPanel?.SetActive(true);
         }
+    }
+
+    private void UpdateMeepleStates()
+    {
+        Dictionary<KingMeepleView, PieceView> meeplesDict = PieceManager.instance.meeplesDict;
+
+        foreach (KingMeepleView meeple in meeplesDict.Keys)
+        {
+            PieceView pieceView = meeplesDict[meeple];
+            List<MeepleType> neighborsMeepleTypes = new List<MeepleType>();
+            if (pieceView.isOnGrid)
+            {
+                neighborsMeepleTypes = GetNeighborsMeepleTypes(pieceView.pieceModel);
+            }
+            meeple.UpdateMeepleStateBasedOnNeighbors(neighborsMeepleTypes);
+        }
+    }
+
+    private List<MeepleType> GetNeighborsMeepleTypes(PieceModel pieceViewPieceModel)
+    {
+        Dictionary<BlockModel, MeepleType> blockMeepleDict = new Dictionary<BlockModel, MeepleType>();
+
+        foreach (BlockModel blockModel in pieceViewPieceModel.blocks)
+        {
+            List<BlockModel> adjacentBlocks = GetAdjacentBlocks(blockModel);
+            foreach (var adjacentBlock in adjacentBlocks)
+            {
+                if (adjacentBlock.meepleType != MeepleType.NONE)
+                {
+                    blockMeepleDict[adjacentBlock] = adjacentBlock.meepleType;
+                }
+            }
+        }
+
+
+        return blockMeepleDict.Values.ToList();
+    }
+
+    private List<BlockModel> GetAdjacentBlocks(BlockModel blockModel)
+    {
+        HashSet<BlockModel> adjacentBlocks = new HashSet<BlockModel>();
+        List<Vector2Int> adjacentDirections = new List<Vector2Int>()
+        {
+            new(-1, 0),
+            new(1, 0),
+            new(0, -1),
+            new(0, 1),
+        };
+        var basePos = blockModel.cellGridModel.gridPosition;
+
+        foreach (Vector2Int adjacentDirection in adjacentDirections)
+        {
+            Vector2Int adjacentPos = basePos + adjacentDirection;
+            if (adjacentPos.x < 0 || adjacentPos.y < 0 || adjacentPos.x >= gridModel.width ||
+                adjacentPos.y >= gridModel.height)
+            {
+                continue;
+            }
+
+            CellGridModel adjacentCell = gridModel.grid[adjacentPos.x, adjacentPos.y];
+            if (!adjacentCell.isEmpty)
+            {
+                adjacentBlocks.Add(adjacentCell.blockModel);
+            }
+        }
+
+        return adjacentBlocks.ToList();
     }
 
     private bool IsPositionInGrid(Vector2Int pos)
@@ -167,7 +242,7 @@ public class GridManager : MonoBehaviour
         return false;
     }
 
-    private bool CheckVictoryCondition()
+    private bool IsBoardFull()
     {
         bool isVictoryCondition = true;
         for (int y = 0; y < gridModel.height; y++)
@@ -261,6 +336,7 @@ public class GridManager : MonoBehaviour
         }
 
         selectedPiece.SetIsPieceOnGrid(false);
+        OnGridUpdated();
     }
 
     public void OnPieceSelected(PieceView piece)
