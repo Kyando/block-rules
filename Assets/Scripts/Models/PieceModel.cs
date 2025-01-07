@@ -11,13 +11,17 @@ public class PieceModel
         J,
         S,
         Z,
-        O
+        O,
+        I3,
+        L3,
+        I2,
+        O1,
     }
 
     // public Vector3 position;
     public BlockModel[] blocks;
     private PieceType pieceType = PieceType.I;
-    public Color pieceColor = Color.white  ;
+    public Color pieceColor = Color.white;
     public int pieceId = 0;
 
 
@@ -107,6 +111,31 @@ public class PieceModel
                     new BlockModel(new Vector2Int(0, 0), pieceModel),
                     new BlockModel(new Vector2Int(0, 1), pieceModel),
                     new BlockModel(new Vector2Int(1, 1), pieceModel),
+                };
+            case PieceType.I3:
+                return new[]
+                {
+                    new BlockModel(new Vector2Int(-1, 0), pieceModel),
+                    new BlockModel(new Vector2Int(0, 0), pieceModel),
+                    new BlockModel(new Vector2Int(1, 0), pieceModel),
+                };
+            case PieceType.L3:
+                return new[]
+                {
+                    new BlockModel(new Vector2Int(0, 1), pieceModel),
+                    new BlockModel(new Vector2Int(0, 0), pieceModel),
+                    new BlockModel(new Vector2Int(1, 0), pieceModel),
+                };
+            case PieceType.I2:
+                return new[]
+                {
+                    new BlockModel(new Vector2Int(0, 0), pieceModel),
+                    new BlockModel(new Vector2Int(1, 0), pieceModel),
+                };
+            case PieceType.O1:
+                return new[]
+                {
+                    new BlockModel(new Vector2Int(0, 0), pieceModel),
                 };
         }
 

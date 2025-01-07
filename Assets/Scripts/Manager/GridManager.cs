@@ -158,13 +158,31 @@ public class GridManager : MonoBehaviour
     private void OnGridUpdated()
     {
         UpdateMeepleStates();
-        
+
+        bool hasAngryMeeples = HasAnyAngryMeeple();
         bool isBoardFull = IsBoardFull();
-        if (isBoardFull)
+        bool isVictory = isBoardFull && !hasAngryMeeples;
+        if (isVictory)
         {
             Debug.Log("Victory");
-            victoryPanel?.SetActive(true);
         }
+
+        victoryPanel?.SetActive(isVictory);
+        LevelManager.instance.canLoadNextLevel = isVictory;
+    }
+
+    private bool HasAnyAngryMeeple()
+    {
+        foreach (KingMeepleView meeple in PieceManager.instance.meeplesDict.Keys)
+        {
+            if (meeple.meepleState == MeepleState.ANGRY)
+            {
+                Debug.Log("Angry Meeple found");
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void UpdateMeepleStates()
@@ -179,6 +197,7 @@ public class GridManager : MonoBehaviour
             {
                 neighborsMeepleTypes = GetNeighborsMeepleTypes(pieceView.pieceModel);
             }
+
             meeple.UpdateMeepleStateBasedOnNeighbors(neighborsMeepleTypes);
         }
     }

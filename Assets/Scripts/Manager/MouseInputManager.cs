@@ -30,6 +30,7 @@ public class MouseInputManager : MonoBehaviour
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             selectedPiece.transform.position = new Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 0);
         }
+        
 
         if (Input.GetMouseButtonDown(1))
         {
@@ -38,6 +39,7 @@ public class MouseInputManager : MonoBehaviour
                 selectedPiece.Rotate();
             }
         }
+        
     }
 
     public void OnPieceSelected(PieceView piece)

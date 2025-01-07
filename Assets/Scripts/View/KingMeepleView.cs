@@ -21,28 +21,6 @@ public class KingMeepleView : MonoBehaviour
         this._animator = this.GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            if (meepleState == MeepleState.IDLE)
-            {
-                meepleState = MeepleState.ANGRY;
-                this._animator.CrossFade("Angry", .5f, 0);
-            }
-            else if (meepleState == MeepleState.ANGRY)
-            {
-                meepleState = MeepleState.IDLE;
-                this._animator.CrossFade("Idle", .5f, 0);
-            }
-
-            List<MeepleType> adjacentMeepleTypes = new List<MeepleType>();
-            adjacentMeepleTypes.Add(MeepleType.RED_KING);
-            UpdateMeepleStateBasedOnNeighbors(adjacentMeepleTypes);
-        }
-    }
-
     public void UpdateMeepleStateBasedOnNeighbors(List<MeepleType> adjacentMeepleTypes)
     {
         MeepleType enemyType = GetEnemyMeepleType(this.meepleType);
