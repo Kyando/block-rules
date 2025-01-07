@@ -28,6 +28,10 @@ public class LevelManager : MonoBehaviour
         SceneManager.LoadScene(levelIndex);
     }
 
+    public void LoadPreviousLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex - 1);
+    }
     public void LoadNextLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
@@ -63,39 +67,14 @@ public class LevelManager : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        if (Input.GetKeyDown(KeyCode.A))
         {
-            LoadLevelByIndex(1);
+            LoadPreviousLevel();
             return;
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.D))
         {
-            LoadLevelByIndex(2);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            LoadLevelByIndex(3);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            LoadLevelByIndex(4);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha6))
-        {
-            LoadLevelByIndex(5);
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha7))
-        {
-            LoadLevelByIndex(6);
+            LoadNextLevel();
             return;
         }
     }
