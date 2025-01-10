@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MouseInputManager : MonoBehaviour
 {
-    public static MouseInputManager instance { get; private set; }
+    public static MouseInputManager instance;
     public PieceView selectedPiece;
 
     private void Awake()
@@ -30,7 +30,7 @@ public class MouseInputManager : MonoBehaviour
             Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             selectedPiece.transform.position = new Vector3(mouseWorldPosition.x, mouseWorldPosition.y, 0);
         }
-        
+
 
         if (Input.GetMouseButtonDown(1))
         {
@@ -39,22 +39,31 @@ public class MouseInputManager : MonoBehaviour
                 selectedPiece.Rotate();
             }
         }
-        
     }
 
-    public void OnPieceSelected(PieceView piece)
+    public void OnPieceClicked(PieceView piece)
     {
         if (selectedPiece == piece)
         {
-            GridManager.instance.PlacePieceOnGrid();
-            this.selectedPiece.isPieceSelected = false;
-            this.selectedPiece = null;
-            GridManager.instance.OnPieceSelected(null);
+            OnPieceDeselected();
             return;
         }
 
+        OnPieceSelected(piece);
+    }
+
+    protected void OnPieceSelected(PieceView piece)
+    {
         this.selectedPiece = piece;
         this.selectedPiece.isPieceSelected = true;
         GridManager.instance.OnPieceSelected(piece);
+    }
+
+    protected void OnPieceDeselected()
+    {
+        GridManager.instance.PlacePieceOnGrid();
+        this.selectedPiece.isPieceSelected = false;
+        this.selectedPiece = null;
+        GridManager.instance.OnPieceSelected(null);
     }
 }

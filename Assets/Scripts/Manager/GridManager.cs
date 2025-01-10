@@ -175,7 +175,7 @@ public class GridManager : MonoBehaviour
     {
         foreach (KingMeepleView meeple in PieceManager.instance.meeplesDict.Keys)
         {
-            if (meeple.meepleState == MeepleState.ANGRY)
+            if (meeple.meepleModel.meepleState == MeepleState.ANGRY)
             {
                 Debug.Log("Angry Meeple found");
                 return true;
@@ -211,9 +211,9 @@ public class GridManager : MonoBehaviour
             List<BlockModel> adjacentBlocks = GetAdjacentBlocks(blockModel);
             foreach (var adjacentBlock in adjacentBlocks)
             {
-                if (adjacentBlock.meepleType != MeepleType.NONE)
+                if (adjacentBlock.meepleModel is not null && adjacentBlock.meepleModel.meepleType != MeepleType.NONE)
                 {
-                    blockMeepleDict[adjacentBlock] = adjacentBlock.meepleType;
+                    blockMeepleDict[adjacentBlock] = adjacentBlock.meepleModel.meepleType;
                 }
             }
         }

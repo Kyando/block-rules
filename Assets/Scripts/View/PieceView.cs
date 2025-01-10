@@ -65,13 +65,20 @@ public class PieceView : MonoBehaviour
             blocks.Add(blockView);
         }
 
+        InitializeMeeplesAndBlocks();
+
+        // BoxCollider2D collider2D = this.AddComponent<BoxCollider2D>();
+    }
+
+    public void InitializeMeeplesAndBlocks()
+    {
         for (int i = 0; i < meepleList.Count; i++)
         {
             KingMeepleView meeple = meepleList[i];
             BlockView blockView = null;
             for (int j = 0; j < blocks.Count; j++)
             {
-                blocks[j].blockModel.meepleType = meeple.meepleType;
+                blocks[j].blockModel.meepleModel = meeple.meepleModel;
                 if (blockView is null)
                 {
                     blockView = blocks[j];
@@ -95,8 +102,6 @@ public class PieceView : MonoBehaviour
 
             meeple.transform.rotation = Quaternion.identity;
         }
-
-        // BoxCollider2D collider2D = this.AddComponent<BoxCollider2D>();
     }
 
     void Start()
@@ -187,6 +192,6 @@ public class PieceView : MonoBehaviour
 
     private void OnMouseDown()
     {
-        MouseInputManager.instance.OnPieceSelected(this);
+        MouseInputManager.instance.OnPieceClicked(this);
     }
 }

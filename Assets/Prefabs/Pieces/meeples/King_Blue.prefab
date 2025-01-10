@@ -255,8 +255,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kingColor: {r: 0.21176471, g: 0.8901961, b: 0.92941177, a: 1}
-  meepleType: 1
-  meepleState: 0
+  meepleModel:
+    meepleType: 1
+    meepleState: 0
   crownSprite: {fileID: 4994124793716071631}
   blockView: {fileID: 0}
   _animator: {fileID: 0}

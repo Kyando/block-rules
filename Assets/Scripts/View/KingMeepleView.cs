@@ -5,8 +5,10 @@ using UnityEngine;
 public class KingMeepleView : MonoBehaviour
 {
     public Color kingColor;
-    public MeepleType meepleType = MeepleType.NONE;
-    public MeepleState meepleState = MeepleState.IDLE;
+
+    // public MeepleType meepleType = MeepleType.NONE;
+    [SerializeField]public MeepleModel meepleModel = new MeepleModel();
+    // public MeepleState meepleState = MeepleState.IDLE;
     public SpriteRenderer crownSprite;
     public BlockView blockView;
     [SerializeField] private Animator _animator;
@@ -23,17 +25,17 @@ public class KingMeepleView : MonoBehaviour
 
     public void UpdateMeepleStateBasedOnNeighbors(List<MeepleType> adjacentMeepleTypes)
     {
-        MeepleType enemyType = GetEnemyMeepleType(this.meepleType);
+        MeepleType enemyType = GetEnemyMeepleType(this.meepleModel.meepleType);
         bool isAngry = adjacentMeepleTypes.Contains(enemyType);
 
-        if (isAngry && meepleState == MeepleState.IDLE)
+        if (isAngry && meepleModel.meepleState == MeepleState.IDLE)
         {
-            meepleState = MeepleState.ANGRY;
+            meepleModel.meepleState = MeepleState.ANGRY;
             this._animator.CrossFade("Angry", .5f, 0);
         }
-        else if (!isAngry && meepleState == MeepleState.ANGRY)
+        else if (!isAngry && meepleModel.meepleState == MeepleState.ANGRY)
         {
-            meepleState = MeepleState.IDLE;
+            meepleModel.meepleState = MeepleState.IDLE;
             this._animator.CrossFade("Idle", .5f, 0);
         }
     }
