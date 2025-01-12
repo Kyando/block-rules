@@ -7,7 +7,7 @@ public class BlockModel
     public PieceModel pieceModel;
     public CellGridModel cellGridModel;
     public MeepleModel meepleModel;
-    // public MeepleType meepleType = MeepleType.NONE;
+    public KingdomType kingdomType = KingdomType.NONE;
 
 
     public BlockModel(Vector2Int piecePosition, PieceModel pieceModel)

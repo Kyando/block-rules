@@ -290,6 +290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pieceType: 5
+  kingdomType: 1
   pieceColor: {r: 0.34509805, g: 0.7058824, b: 0.7254902, a: 1}
   posOffset: {x: 0, y: -0.5}
   blockPrefab: {fileID: 7673391161165421882, guid: c0c6dc70a7cbd74fab4cc4ee9b679fab, type: 3}

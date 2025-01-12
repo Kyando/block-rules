@@ -173,7 +173,7 @@ public class GridManager : MonoBehaviour
 
     private bool HasAnyAngryMeeple()
     {
-        foreach (KingMeepleView meeple in PieceManager.instance.meeplesDict.Keys)
+        foreach (BaseMeepleView meeple in PieceManager.instance.meeplesDict.Keys)
         {
             if (meeple.meepleModel.meepleState == MeepleState.ANGRY)
             {
@@ -187,33 +187,33 @@ public class GridManager : MonoBehaviour
 
     private void UpdateMeepleStates()
     {
-        Dictionary<KingMeepleView, PieceView> meeplesDict = PieceManager.instance.meeplesDict;
+        Dictionary<BaseMeepleView, PieceView> meeplesDict = PieceManager.instance.meeplesDict;
 
-        foreach (KingMeepleView meeple in meeplesDict.Keys)
+        foreach (BaseMeepleView meeple in meeplesDict.Keys)
         {
             PieceView pieceView = meeplesDict[meeple];
-            List<MeepleType> neighborsMeepleTypes = new List<MeepleType>();
+            List<KingdomType> neighborsKingdoms = new List<KingdomType>();
             if (pieceView.isOnGrid)
             {
-                neighborsMeepleTypes = GetNeighborsMeepleTypes(pieceView.pieceModel);
+                neighborsKingdoms = GetNeighborKingdomTypes(pieceView.pieceModel);
             }
 
-            meeple.UpdateMeepleStateBasedOnNeighbors(neighborsMeepleTypes);
+            meeple.UpdateMeepleStateBasedOnNeighbors(neighborsKingdoms);
         }
     }
 
-    private List<MeepleType> GetNeighborsMeepleTypes(PieceModel pieceViewPieceModel)
+    private List<KingdomType> GetNeighborKingdomTypes(PieceModel pieceViewPieceModel)
     {
-        Dictionary<BlockModel, MeepleType> blockMeepleDict = new Dictionary<BlockModel, MeepleType>();
+        Dictionary<BlockModel, KingdomType> blockMeepleDict = new Dictionary<BlockModel, KingdomType>();
 
         foreach (BlockModel blockModel in pieceViewPieceModel.blocks)
         {
             List<BlockModel> adjacentBlocks = GetAdjacentBlocks(blockModel);
             foreach (var adjacentBlock in adjacentBlocks)
             {
-                if (adjacentBlock.meepleModel is not null && adjacentBlock.meepleModel.meepleType != MeepleType.NONE)
+                if (adjacentBlock.meepleModel is not null && adjacentBlock.kingdomType != KingdomType.NONE)
                 {
-                    blockMeepleDict[adjacentBlock] = adjacentBlock.meepleModel.meepleType;
+                    blockMeepleDict[adjacentBlock] = adjacentBlock.kingdomType;
                 }
             }
         }

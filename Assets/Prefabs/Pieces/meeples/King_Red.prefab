@@ -343,7 +343,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   kingColor: {r: 0.9372549, g: 0.19607843, b: 0.62352943, a: 1}
   meepleModel:
-    meepleType: 0
+    kingdomType: 0
     meepleState: 0
   crownSprite: {fileID: 6178517119945765978}
   blockView: {fileID: 0}

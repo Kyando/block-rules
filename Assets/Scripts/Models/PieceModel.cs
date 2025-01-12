@@ -1,4 +1,5 @@
 using System.IO;
+using Enums;
 using UnityEngine;
 
 public class PieceModel
@@ -25,11 +26,20 @@ public class PieceModel
     public int pieceId = 0;
 
 
-    public PieceModel(PieceType pieceType, Color pieceColor)
+    public PieceModel(PieceType pieceType, Color pieceColor, KingdomType kingdomType)
     {
         this.pieceType = pieceType;
         this.pieceColor = pieceColor;
         this.blocks = GetBlocksByPieceType(this);
+        SetBlocksKingdomType(kingdomType);
+    }
+
+    public void SetBlocksKingdomType(KingdomType newKingdomType)
+    {
+        foreach (var blockModel in blocks)
+        {
+            blockModel.kingdomType = newKingdomType;
+        }
     }
 
     public void FlipPieceHorizontally()

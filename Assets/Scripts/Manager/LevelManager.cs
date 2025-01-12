@@ -5,6 +5,7 @@ public class LevelManager : MonoBehaviour
 {
     public static LevelManager instance { get; private set; }
     public bool canLoadNextLevel = false;
+    public bool shortCutsEnabled = true;
 
     void Awake()
     {
@@ -45,6 +46,8 @@ public class LevelManager : MonoBehaviour
 
     private void Update()
     {
+        if (!shortCutsEnabled)
+            return;
         if (Input.GetKeyDown(KeyCode.R))
         {
             RestartLevel();

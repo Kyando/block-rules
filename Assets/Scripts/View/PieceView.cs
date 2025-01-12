@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Enums;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -6,6 +7,7 @@ using UnityEngine.Serialization;
 public class PieceView : MonoBehaviour
 {
     public PieceModel.PieceType pieceType;
+    public KingdomType kingdomType = KingdomType.NONE;
     public Color pieceColor;
     public PieceModel pieceModel;
     public Vector2 posOffset;
@@ -13,7 +15,7 @@ public class PieceView : MonoBehaviour
     public List<BlockView> blocks;
     public bool isOnGrid { get; private set; }
 
-    public List<KingMeepleView> meepleList = new List<KingMeepleView>();
+    public List<BaseMeepleView> meepleList = new List<BaseMeepleView>();
 
     [SerializeField] private bool isMouseOver = false;
     public bool isPieceSelected = false;
@@ -23,13 +25,13 @@ public class PieceView : MonoBehaviour
 
     void Awake()
     {
-        this.pieceModel = new PieceModel(this.pieceType, this.pieceColor);
+        this.pieceModel = new PieceModel(this.pieceType, this.pieceColor, kingdomType);
         for (int i = 0; i < transform.childCount; i++)
         {
-            KingMeepleView kingMeeple = transform.GetChild(i).GetComponent<KingMeepleView>();
-            if (kingMeeple)
+            BaseMeepleView baseMeeple = transform.GetChild(i).GetComponent<BaseMeepleView>();
+            if (baseMeeple)
             {
-                meepleList.Add(kingMeeple);
+                meepleList.Add(baseMeeple);
             }
         }
 
@@ -72,9 +74,19 @@ public class PieceView : MonoBehaviour
 
     public void InitializeMeeplesAndBlocks()
     {
+        if (meepleList.Count == 0)
+        {
+            for (int j = 0; j < blocks.Count; j++)
+            {
+                blocks[j].blockModel.meepleModel = null;
+            }
+
+            return;
+        }
+
         for (int i = 0; i < meepleList.Count; i++)
         {
-            KingMeepleView meeple = meepleList[i];
+            BaseMeepleView meeple = meepleList[i];
             BlockView blockView = null;
             for (int j = 0; j < blocks.Count; j++)
             {
@@ -162,7 +174,7 @@ public class PieceView : MonoBehaviour
         UpdateSpriteColors();
     }
 
-    private void UpdateSpriteColors()
+    public void UpdateSpriteColors()
     {
         if (isPieceSelected || isOnGrid || isMouseOver)
         {

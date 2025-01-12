@@ -11,7 +11,7 @@ public class PieceManager : MonoBehaviour
 
 
     [SerializeField]
-    public Dictionary<KingMeepleView, PieceView> meeplesDict = new Dictionary<KingMeepleView, PieceView>();
+    public Dictionary<BaseMeepleView, PieceView> meeplesDict = new Dictionary<BaseMeepleView, PieceView>();
 
     void Awake()
     {
@@ -23,10 +23,19 @@ public class PieceManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
 
+    private void Start()
+    {
+        InitializePieceViews();
+    }
+
+    public void InitializePieceViews()
+    {
+        gamePieces.Clear();
+        meeplesDict.Clear();
         if (piecesTransformParent is not null)
         {
-            gamePieces.Clear();
             for (int i = 0; i < piecesTransformParent.childCount; i++)
             {
                 PieceView pieceView = piecesTransformParent.GetChild(i).GetComponent<PieceView>();
@@ -36,13 +45,10 @@ public class PieceManager : MonoBehaviour
                 }
             }
         }
-    }
 
-    private void Start()
-    {
         foreach (var piece in gamePieces)
         {
-            foreach (KingMeepleView meeple in piece.meepleList)
+            foreach (BaseMeepleView meeple in piece.meepleList)
             {
                 meeplesDict.Add(meeple, piece);
             }
