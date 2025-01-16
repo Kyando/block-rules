@@ -383,6 +383,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1189977995}
     m_Modifications:
+    - target: {fileID: 1183361525985931100, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_Name
+      value: meeple
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512292473059230234, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512292473059230234, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1512292473059230234, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2340794049117337949, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2874203025358331310, guid: b0acef135754b90678d476ebb0933e63, type: 3}
       propertyPath: m_LocalPosition.x
       value: -4
@@ -426,6 +446,10 @@ PrefabInstance:
     - target: {fileID: 6636417941483945011, guid: b0acef135754b90678d476ebb0933e63, type: 3}
       propertyPath: m_Name
       value: red_king_3tiles_L_shape
+      objectReference: {fileID: 0}
+    - target: {fileID: 7627308392129214382, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1076,6 +1100,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: blue_king_3tiles_L_shape
       objectReference: {fileID: 0}
+    - target: {fileID: 8084042741467670903, guid: e52728bd5b02e228b84f0d86bc89ca8b, type: 3}
+      propertyPath: m_Name
+      value: meeple
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1160,6 +1188,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   canLoadNextLevel: 0
+  shortCutsEnabled: 1
 --- !u!1 &1310458347
 GameObject:
   m_ObjectHideFlags: 0

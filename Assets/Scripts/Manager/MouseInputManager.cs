@@ -45,6 +45,7 @@ public class MouseInputManager : MonoBehaviour
     {
         if (selectedPiece == piece)
         {
+            GridManager.instance.PlacePieceOnGrid();
             OnPieceDeselected();
             return;
         }
@@ -61,7 +62,6 @@ public class MouseInputManager : MonoBehaviour
 
     protected void OnPieceDeselected()
     {
-        GridManager.instance.PlacePieceOnGrid();
         this.selectedPiece.isPieceSelected = false;
         this.selectedPiece = null;
         GridManager.instance.OnPieceSelected(null);

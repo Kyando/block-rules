@@ -1,6 +1,7 @@
 using Enums;
 using UnityEngine;
 
+[System.Serializable]
 public class BlockModel
 {
     public Vector2Int piecePosition;

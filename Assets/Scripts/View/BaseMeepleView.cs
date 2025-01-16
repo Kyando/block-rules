@@ -5,20 +5,12 @@ using UnityEngine.Serialization;
 
 public class BaseMeepleView : MonoBehaviour
 {
-    [FormerlySerializedAs("kingColor")] public Color meepleColor;
-
-    [SerializeField]public MeepleModel meepleModel = new MeepleModel();
-    public SpriteRenderer crownSprite;
+    [SerializeField] public MeepleModel meepleModel = new MeepleModel();
     public BlockView blockView;
     [SerializeField] private Animator _animator;
 
     void Awake()
     {
-        if (crownSprite)
-        {
-            crownSprite.color = meepleColor;
-        }
-
         this._animator = this.GetComponent<Animator>();
     }
 
@@ -33,6 +25,25 @@ public class BaseMeepleView : MonoBehaviour
             this._animator.CrossFade("Angry", .5f, 0);
         }
         else if (!isAngry && meepleModel.meepleState == MeepleState.ANGRY)
+        {
+            meepleModel.meepleState = MeepleState.IDLE;
+            this._animator.CrossFade("Idle", .5f, 0);
+        }
+    }
+
+    public void SetMeepleState(MeepleState meepleState)
+    {
+        if (meepleState == meepleModel.meepleState)
+        {
+            return;
+        }
+
+        if (meepleState == MeepleState.ANGRY)
+        {
+            meepleModel.meepleState = MeepleState.ANGRY;
+            this._animator.CrossFade("Angry", .5f, 0);
+        }
+        else if (meepleState == MeepleState.IDLE)
         {
             meepleModel.meepleState = MeepleState.IDLE;
             this._animator.CrossFade("Idle", .5f, 0);

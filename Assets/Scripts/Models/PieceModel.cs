@@ -23,7 +23,7 @@ public class PieceModel
     public BlockModel[] blocks;
     private PieceType pieceType = PieceType.I;
     public Color pieceColor = Color.white;
-    public int pieceId = 0;
+    public int pieceId = -1;
 
 
     public PieceModel(PieceType pieceType, Color pieceColor, KingdomType kingdomType)

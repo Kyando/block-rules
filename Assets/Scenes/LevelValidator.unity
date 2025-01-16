@@ -911,7 +911,11 @@ MonoBehaviour:
   piecesTransformParent: {fileID: 1189977995}
   meeplePrefabs:
   - {fileID: 5526262325310421587, guid: 0c5540adfdac6432db17aa1d30832a24, type: 3}
+  - {fileID: 5526262325310421587, guid: db97df56e81ed9802bad3626770790bb, type: 3}
+  - {fileID: 5526262325310421587, guid: 162f74df28001527ea2986722622b178, type: 3}
   - {fileID: 3292241769033642642, guid: 08133c8043327ae86b57051739a3af98, type: 3}
+  - {fileID: 5526262325310421587, guid: 751073628a28ac3028ae33dd9c074fed, type: 3}
+  - {fileID: 5526262325310421587, guid: 17ca78ec2bca046f08474d562c73aec8, type: 3}
 --- !u!1 &1755627715
 GameObject:
   m_ObjectHideFlags: 0

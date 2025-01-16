@@ -1,15 +1,15 @@
 fileFormatVersion: 2
-guid: 9f739bf4278b8f656b0afd1aef66e7d3
+guid: 3b8a6ac8008141abcb7b243a58673807
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8606217101557194921
-    second: kingu_200_0
+      213: 1952507750863325824
+    second: villager_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 200
+  spritePixelsToUnits: 108
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: kingu_200_0
+      name: villager_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 19
         y: 0
-        width: 118
-        height: 190
+        width: 62
+        height: 100
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 75f9ac1d423909880800000000000000
-      internalID: -8606217101557194921
+      spriteID: 08ac76f5473b81b10800000000000000
+      internalID: 1952507750863325824
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      kingu_200_0: -8606217101557194921
+      villager_0: 1952507750863325824
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

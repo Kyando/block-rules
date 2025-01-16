@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Enums;
 using NUnit.Framework;
+using Processors;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -157,7 +158,7 @@ public class GridManager : MonoBehaviour
 
     private void OnGridUpdated()
     {
-        UpdateMeepleStates();
+        MeepleProcessor.UpdaetMeepleStatus(gridModel);
 
         bool hasAngryMeeples = HasAnyAngryMeeple();
         bool isBoardFull = IsBoardFull();
@@ -183,74 +184,6 @@ public class GridManager : MonoBehaviour
         }
 
         return false;
-    }
-
-    private void UpdateMeepleStates()
-    {
-        Dictionary<BaseMeepleView, PieceView> meeplesDict = PieceManager.instance.meeplesDict;
-
-        foreach (BaseMeepleView meeple in meeplesDict.Keys)
-        {
-            PieceView pieceView = meeplesDict[meeple];
-            List<KingdomType> neighborsKingdoms = new List<KingdomType>();
-            if (pieceView.isOnGrid)
-            {
-                neighborsKingdoms = GetNeighborKingdomTypes(pieceView.pieceModel);
-            }
-
-            meeple.UpdateMeepleStateBasedOnNeighbors(neighborsKingdoms);
-        }
-    }
-
-    private List<KingdomType> GetNeighborKingdomTypes(PieceModel pieceViewPieceModel)
-    {
-        Dictionary<BlockModel, KingdomType> blockMeepleDict = new Dictionary<BlockModel, KingdomType>();
-
-        foreach (BlockModel blockModel in pieceViewPieceModel.blocks)
-        {
-            List<BlockModel> adjacentBlocks = GetAdjacentBlocks(blockModel);
-            foreach (var adjacentBlock in adjacentBlocks)
-            {
-                if (adjacentBlock.meepleModel is not null && adjacentBlock.kingdomType != KingdomType.NONE)
-                {
-                    blockMeepleDict[adjacentBlock] = adjacentBlock.kingdomType;
-                }
-            }
-        }
-
-
-        return blockMeepleDict.Values.ToList();
-    }
-
-    private List<BlockModel> GetAdjacentBlocks(BlockModel blockModel)
-    {
-        HashSet<BlockModel> adjacentBlocks = new HashSet<BlockModel>();
-        List<Vector2Int> adjacentDirections = new List<Vector2Int>()
-        {
-            new(-1, 0),
-            new(1, 0),
-            new(0, -1),
-            new(0, 1),
-        };
-        var basePos = blockModel.cellGridModel.gridPosition;
-
-        foreach (Vector2Int adjacentDirection in adjacentDirections)
-        {
-            Vector2Int adjacentPos = basePos + adjacentDirection;
-            if (adjacentPos.x < 0 || adjacentPos.y < 0 || adjacentPos.x >= gridModel.width ||
-                adjacentPos.y >= gridModel.height)
-            {
-                continue;
-            }
-
-            CellGridModel adjacentCell = gridModel.grid[adjacentPos.x, adjacentPos.y];
-            if (!adjacentCell.isEmpty)
-            {
-                adjacentBlocks.Add(adjacentCell.blockModel);
-            }
-        }
-
-        return adjacentBlocks.ToList();
     }
 
     private bool IsPositionInGrid(Vector2Int pos)

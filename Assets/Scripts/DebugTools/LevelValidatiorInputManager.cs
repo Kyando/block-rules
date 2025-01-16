@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 using Enums;
+using Processors.Utils;
 using UnityEngine;
 
 public class LevelValidatiorInputManager : MouseInputManager
@@ -7,6 +9,7 @@ public class LevelValidatiorInputManager : MouseInputManager
     public PieceView piecePrefab;
     public Transform piecesTransformParent;
     public List<BaseMeepleView> meeplePrefabs;
+    public List<BlockModel> meepleBlocks;
 
     private void Awake()
     {
@@ -53,6 +56,14 @@ public class LevelValidatiorInputManager : MouseInputManager
 
     private void HandleInputs()
     {
+        //Debug Base
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            
+            GridUtils.IsAllKingdomBlocksConnected(KingdomType.BLUE_KINGDOM, GridManager.instance.gridModel);
+        }
+
+        //Meeples
         if (Input.GetKeyDown(KeyCode.Q))
         {
             SetTileMeepleType(meeplePrefabs[0]);
@@ -63,25 +74,45 @@ public class LevelValidatiorInputManager : MouseInputManager
             SetTileMeepleType(meeplePrefabs[1]);
         }
 
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            SetTileMeepleType(meeplePrefabs[2]);
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            SetTileMeepleType(meeplePrefabs[3]);
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            SetTileMeepleType(meeplePrefabs[4]);
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            SetTileMeepleType(meeplePrefabs[5]);
+        }
+
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             SetTileMeepleType(null);
         }
 
         // Kingdom colors
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             SetTileKingdomType(KingdomType.BLUE_KINGDOM);
         }
-        else if (Input.GetKeyDown(KeyCode.S))
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             SetTileKingdomType(KingdomType.RED_KINGDOM);
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             SetTileKingdomType(KingdomType.YELLOW_KINGDOM);
         }
-        else if (Input.GetKeyDown(KeyCode.F))
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             SetTileKingdomType(KingdomType.NONE);
         }

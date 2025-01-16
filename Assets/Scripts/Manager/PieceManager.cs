@@ -41,6 +41,7 @@ public class PieceManager : MonoBehaviour
                 PieceView pieceView = piecesTransformParent.GetChild(i).GetComponent<PieceView>();
                 if (pieceView)
                 {
+                    pieceView.pieceModel.pieceId = i;
                     gamePieces.Add(pieceView);
                 }
             }
