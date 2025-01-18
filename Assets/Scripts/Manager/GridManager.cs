@@ -178,7 +178,6 @@ public class GridManager : MonoBehaviour
         {
             if (meeple.meepleModel.meepleState == MeepleState.ANGRY)
             {
-                Debug.Log("Angry Meeple found");
                 return true;
             }
         }

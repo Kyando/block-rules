@@ -8,7 +8,7 @@ public class PieceView : MonoBehaviour
 {
     public PieceModel.PieceType pieceType;
     public KingdomType kingdomType = KingdomType.NONE;
-    public Color pieceColor;
+    private Color pieceColor;
     public PieceModel pieceModel;
     public Vector2 posOffset;
     public BlockView blockPrefab;
@@ -19,13 +19,17 @@ public class PieceView : MonoBehaviour
 
     [SerializeField] private bool isMouseOver = false;
     public bool isPieceSelected = false;
-    private SpriteRenderer spriteRenderer;
-    private SpriteRenderer bottomSpriteRenderer;
+    private SpriteRenderer spriteRenderer = null;
+    private SpriteRenderer bottomSpriteRenderer = null;
 
 
     void Awake()
     {
+        float initialRotation = transform.eulerAngles.z;
+        this.transform.rotation = Quaternion.Euler(0, 0, 0);
+        this.pieceColor = ColorConstants.GetPieceColorFromKingdomType(kingdomType);
         this.pieceModel = new PieceModel(this.pieceType, this.pieceColor, kingdomType);
+
         for (int i = 0; i < transform.childCount; i++)
         {
             BaseMeepleView baseMeeple = transform.GetChild(i).GetComponent<BaseMeepleView>();
@@ -68,8 +72,26 @@ public class PieceView : MonoBehaviour
         }
 
         InitializeMeeplesAndBlocks();
+        InitializeRotation(initialRotation);
 
         // BoxCollider2D collider2D = this.AddComponent<BoxCollider2D>();
+    }
+
+    private void InitializeRotation(float initialRotation)
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            RotatePieceClowckwise();
+            if (Mathf.Approximately(initialRotation, transform.rotation.eulerAngles.z))
+            {
+                break;
+            }
+        }
+
+        foreach (var meepleView in meepleList)
+        {
+            meepleView.transform.rotation = Quaternion.identity;
+        }
     }
 
     public void InitializeMeeplesAndBlocks()
@@ -90,7 +112,6 @@ public class PieceView : MonoBehaviour
             BlockView blockView = null;
             for (int j = 0; j < blocks.Count; j++)
             {
-                blocks[j].blockModel.meepleModel = meeple.meepleModel;
                 if (blockView is null)
                 {
                     blockView = blocks[j];
@@ -110,9 +131,8 @@ public class PieceView : MonoBehaviour
             if (blockView is not null)
             {
                 meeple.blockView = blockView;
+                blockView.blockModel.meepleModel = meeple.meepleModel;
             }
-
-            meeple.transform.rotation = Quaternion.identity;
         }
     }
 
@@ -157,21 +177,32 @@ public class PieceView : MonoBehaviour
         return piecePos;
     }
 
-    public void Rotate()
+    public void RotatePieceClowckwise()
     {
         Vector3 rotationEuler = this.transform.rotation.eulerAngles;
         float zRotation = rotationEuler.z - 90;
         if (zRotation == 0 || zRotation == -360)
             zRotation = 360;
         this.transform.rotation = Quaternion.Euler(0, 0, zRotation);
-        this.pieceModel.RotatePiece(clockwise: true);
-        this.bottomSpriteRenderer.transform.position = this.transform.position + new Vector3(0, -.25f, 0);
+        if (pieceModel is not null)
+        {
+            this.pieceModel.RotatePiece(clockwise: true);
+            this.bottomSpriteRenderer.transform.position = this.transform.position + new Vector3(0, -.25f, 0);
+        }
     }
 
     public void SetIsPieceOnGrid(bool isOnGrid)
     {
         this.isOnGrid = isOnGrid;
         UpdateSpriteColors();
+    }
+
+    public void UpdateColorsBasedOnKingdomType()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        this.pieceColor = ColorConstants.GetPieceColorFromKingdomType(kingdomType);
+        spriteRenderer.color = new Color(pieceColor.r, pieceColor.g, pieceColor.b, 1f);
     }
 
     public void UpdateSpriteColors()

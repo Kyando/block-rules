@@ -11,10 +11,11 @@ public abstract class MeepleLumberjackRuleProcessor
             return;
         }
 
+        BlockView blockView = meeple.blockView;
 
         bool isMeepleAngry = true;
-        var neighborBlocksDict = GridUtils.GetNeighborMeeples(pieceView.pieceModel, gridModel);
-        foreach (var blockModel in neighborBlocksDict.Keys)
+        var neighborBlocks = GridUtils.GetAdjacentBlocks(blockView.blockModel, gridModel);
+        foreach (var blockModel in neighborBlocks)
         {
             if (blockModel.meepleModel is null)
             {

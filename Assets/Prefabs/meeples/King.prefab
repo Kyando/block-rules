@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4456429805898320364}
   - component: {fileID: 5544686983403204467}
   m_Layer: 0
-  m_Name: king
+  m_Name: meeple
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -160,7 +160,7 @@ public class LevelValidatiorInputManager : MouseInputManager
 
         selectedPiece.kingdomType = kingdomType;
         selectedPiece.pieceModel.SetBlocksKingdomType(kingdomType);
-        selectedPiece.pieceColor = ColorConstants.GetPieceColorFromKingdomType(kingdomType);
+        selectedPiece.UpdateColorsBasedOnKingdomType();
         selectedPiece.UpdateSpriteColors();
         PieceManager.instance.InitializePieceViews();
     }

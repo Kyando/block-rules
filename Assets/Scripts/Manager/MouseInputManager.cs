@@ -36,7 +36,7 @@ public class MouseInputManager : MonoBehaviour
         {
             if (selectedPiece is not null)
             {
-                selectedPiece.Rotate();
+                selectedPiece.RotatePieceClowckwise();
             }
         }
     }

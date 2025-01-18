@@ -15,16 +15,26 @@ namespace Processors.Utils
             foreach (BlockModel blockModel in pieceModel.blocks)
             {
                 List<BlockModel> adjacentBlocks = GetAdjacentBlocks(blockModel, gridModel);
+                Debug.Log("Adjacent blocks: " + adjacentBlocks.Count);
                 foreach (var adjacentBlock in adjacentBlocks)
                 {
-                    blockMeepleDict[adjacentBlock] = adjacentBlock.meepleModel;
+                    Debug.Log("Adjacent Piece blocks: " + adjacentBlock.pieceModel.blocks.Length);
+                    foreach (var pieceBlock in adjacentBlock.pieceModel.blocks)
+                    {
+                        if (pieceBlock.meepleModel is not null)
+                        {
+                            blockMeepleDict[pieceBlock] = pieceBlock.meepleModel;
+                        }
+                    }
                 }
             }
 
+            Debug.Log("Meeples: " + blockMeepleDict.Count);
             return blockMeepleDict;
         }
 
-        public static List<BlockModel> GetAdjacentBlocks(BlockModel blockModel, GridModel gridModel)
+        public static List<BlockModel> GetAdjacentBlocks(BlockModel blockModel, GridModel gridModel,
+            bool shouldCountSamePieceBlocks = false)
         {
             int currentPieceId = blockModel.pieceModel.pieceId;
             HashSet<BlockModel> adjacentBlocks = new HashSet<BlockModel>();
@@ -47,9 +57,11 @@ namespace Processors.Utils
                 }
 
                 CellGridModel adjacentCell = gridModel.grid[adjacentPos.x, adjacentPos.y];
-                if (!adjacentCell.isEmpty && currentPieceId != adjacentCell.blockModel.pieceModel.pieceId)
+                if (!adjacentCell.isEmpty)
                 {
-                    adjacentBlocks.Add(adjacentCell.blockModel);
+                    bool isBlockFromOtherPiece = currentPieceId != adjacentCell.blockModel.pieceModel.pieceId;
+                    if (isBlockFromOtherPiece || shouldCountSamePieceBlocks)
+                        adjacentBlocks.Add(adjacentCell.blockModel);
                 }
             }
 
@@ -126,7 +138,7 @@ namespace Processors.Utils
                 blocksQueue.Remove(openedBlock);
                 openedBlocks.Add(openedBlock);
 
-                var adjacentBlocks = GetAdjacentBlocks(openedBlock, gridModel);
+                var adjacentBlocks = GetAdjacentBlocks(openedBlock, gridModel, shouldCountSamePieceBlocks: true);
                 foreach (var adjacentBlock in adjacentBlocks)
                 {
                     if (adjacentBlock.kingdomType == kingdomType &&

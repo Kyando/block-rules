@@ -11,7 +11,6 @@ public abstract class MeepleVillagerRuleProcessor
             return;
         }
 
-
         bool isMeepleAngry = false;
         var neighborBlocksDict = GridUtils.GetNeighborMeeples(pieceView.pieceModel, gridModel);
         foreach (var blockModel in neighborBlocksDict.Keys)
