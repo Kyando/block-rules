@@ -2162,6 +2162,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: red_king_3tiles_L_shape
       objectReference: {fileID: 0}
+    - target: {fileID: 8857581587165166104, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_Size.x
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8857581587165166104, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_Size.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8857581587165166104, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_Offset.x
+      value: -0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 8857581587165166104, guid: b0acef135754b90678d476ebb0933e63, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 5767737343696084013, guid: b0acef135754b90678d476ebb0933e63, type: 3}
